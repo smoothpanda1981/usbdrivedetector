@@ -24,9 +24,9 @@ public class DataSourceConnection {
 			prop.load(input);
 	 
 			// get the property value and print it out
-			System.out.println(prop.getProperty("postgres.database"));
-			System.out.println(prop.getProperty("postgres.username"));
-			System.out.println(prop.getProperty("postgres.password"));
+//			System.out.println(prop.getProperty("postgres.database"));
+//			System.out.println(prop.getProperty("postgres.username"));
+//			System.out.println(prop.getProperty("postgres.password"));
 	 
 			connection = DriverManager.getConnection(prop.getProperty("postgres.database"), prop.getProperty("postgres.username"), prop.getProperty("postgres.password"));
 

@@ -46,16 +46,12 @@ public abstract class AbstractStorageDeviceDetector {
      * This instance is created (Thread-Safe) when the JVM loads the class.
      */
     private static final AbstractStorageDeviceDetector instance;
-    
-    private static Connection connection = null;
 
     static {
         if (OSName.startsWith("win")) {
             instance = new WindowsStorageDeviceDetector();
         } else if (OSName.startsWith("linux")) {
             instance = new LinuxStorageDeviceDetector();
-            DataSourceConnection dataSourceConnection = new DataSourceConnection();
-            connection = dataSourceConnection.getConnection();
         } else if (OSName.startsWith("mac")) {
             instance = new OSXStorageDeviceDetector();
         } else {
@@ -85,7 +81,7 @@ public abstract class AbstractStorageDeviceDetector {
         File root = new File(rootPath);
 
         if (logger.isTraceEnabled()) {
-            logger.trace("Device found: " + root.getPath());
+            logger.debug("Device found: " + root.getPath());
         }
 
         USBStorageDevice device = new USBStorageDevice(root);
