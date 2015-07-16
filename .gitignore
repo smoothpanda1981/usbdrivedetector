@@ -1,0 +1,7 @@
+/nb-configuration.xml
+/release.properties
+/target/
+/.settings/
+/.project
+/log4j-application.log
+/.classpath
