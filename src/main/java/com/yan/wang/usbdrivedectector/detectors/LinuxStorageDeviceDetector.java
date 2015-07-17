@@ -17,6 +17,7 @@ package com.yan.wang.usbdrivedectector.detectors;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -115,10 +116,13 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
            while ((outputLine = commandExecutor3.readOutputLine()) != null) {
         	   logger.info(outputLine);
         	   UsbDeviceInfo deviceInfo = extractDeviceInfo(outputLine);
-        	   
-        	   String query = "insert into removable_devices (partition, uuid, label, mount_path, status) values ('" + deviceInfo.getPartition() + "', '" + deviceInfo.getUuid() + "', '" + deviceInfo.getLabel() + "', null, null);";
         	   statement = connection.createStatement();
-        	   statement.execute(query);
+        	   
+        	   if (!uuidExistAlready(deviceInfo.getUuid(), statement)) {
+        		   String query = "insert into removable_devices (partition, uuid, label, mount_path, status) values ('" + deviceInfo.getPartition() + "', '" + deviceInfo.getUuid() + "', '" + deviceInfo.getLabel() + "', null, null);";
+            	  
+            	   statement.execute(query);   
+        	   }
            }
           
 
@@ -144,6 +148,16 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
         }
 
         return listDevices;
+    }
+    
+    private boolean uuidExistAlready(String uuid, Statement statement) throws SQLException {
+    	boolean uuidExistAlready = false;
+    	String query = "SELECT * FROM removable_devices WHERE uuid = '" + uuid + "';";
+    	ResultSet resultSet = statement.executeQuery(query);
+    	if (resultSet.next()) {
+    		uuidExistAlready = true;
+    	}
+    	return uuidExistAlready;
     }
     
     private UsbDeviceInfo extractDeviceInfo(String info) {
