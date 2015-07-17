@@ -165,11 +165,9 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
     	
     	String[] infoList = new String[(info.split(":")).length];
     	infoList = info.split(":");
-    	logger.info(infoList[0]);
     	deviceInfo.setPartition(infoList[0]);
     	
     	String secondSegment = infoList[1].trim();
-    	logger.info(secondSegment);
     	String[] infoListSecondSegment = new String[(secondSegment.split(" ")).length];
     	infoListSecondSegment = secondSegment.split(" ");
     	
@@ -179,9 +177,7 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
     		String[] splittedString = new String[(tempString.split("=")).length];
     		splittedString = tempString.split("=");
     		String key = splittedString[0];
-    		logger.info(key);
     		String value = splittedString[1];
-    		logger.info(value);
     		
     		mapList.put(key, value);
     	}
