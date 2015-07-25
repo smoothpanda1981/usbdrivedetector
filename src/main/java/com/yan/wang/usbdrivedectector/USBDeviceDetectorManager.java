@@ -37,7 +37,7 @@ public class USBDeviceDetectorManager {
 
     private static final Logger logger = Logger.getLogger(USBDeviceDetectorManager.class);
 
-    private static final long defaultPoolingInterval = 5 * 1000;
+    private static final long defaultPoolingInterval = 10 * 1000;
 
     private Set<USBStorageDevice> connectedDevices;
     private List<IUSBDriveListener> listeners;

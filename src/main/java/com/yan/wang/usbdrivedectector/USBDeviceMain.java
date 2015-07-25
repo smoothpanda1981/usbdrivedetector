@@ -2,6 +2,7 @@ package com.yan.wang.usbdrivedectector;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,7 +26,7 @@ public class USBDeviceMain implements IUSBDriveListener {
 
 		for (USBStorageDevice rmDevice : driveDetector.getRemovableDevices()) {
 
-			logger.info("USBStorageDevice : " + rmDevice.getDeviceName());
+			logger.debug("USBStorageDevice : " + rmDevice.getDeviceName());
 		}
 		
         driveDetector.addDriveListener(new USBDeviceMain());
@@ -33,17 +34,17 @@ public class USBDeviceMain implements IUSBDriveListener {
 
 	@Override
 	public void usbDriveEvent(USBStorageEvent event) {
-		logger.info(event.getEventType());
-		logger.info(event);
+		logger.debug(event.getEventType());
+		logger.debug(event);
 		
 		Connection connection = null;
-        Statement statement = null;
         CommandLineExecutor commandExecutor1 = null;
-        
+        ResultSet resultSet = null;
         try {
         	
         	DataSourceConnection dataSourceConnection = new DataSourceConnection();
             connection = dataSourceConnection.getConnection();	
+           
             
             commandExecutor1 = new CommandLineExecutor();
             commandExecutor1.executeCommand("df");
@@ -51,20 +52,28 @@ public class USBDeviceMain implements IUSBDriveListener {
             String outputLine;
             int i = 0;
             while ((outputLine = commandExecutor1.readOutputLine()) != null) {
-        	   logger.info(outputLine);
+        	   logger.debug(outputLine);
         	   if (i > 0) {
         		   
         		   String[] partition = extractPartitionValue(outputLine);
         		   partition[2] = event.getEventType().name();
-        		   statement = connection.createStatement();
+        		   
             	   
             	   String query = "select * from removable_devices where partition = '" + partition[0] + "';";
-            	   ResultSet resultSet = statement.executeQuery(query);
+            	   Statement statement = connection.createStatement();
+            	   resultSet = statement.executeQuery(query);
                    
                    while (resultSet.next()) {
-                	   logger.info(resultSet.getInt("id"));
+                	   logger.debug(resultSet.getInt("id"));
                 	   query = "update removable_devices set mount_path = '" + partition[1] + "', status = '"+ partition[2] + "' where id = "+ resultSet.getInt("id") + ";";
-                	   statement.execute(query);
+                	   Statement statement2 = connection.createStatement();
+                	   statement2.execute(query);
+                	   if (statement2 != null) {
+                		   statement2.close();
+                	   }
+                   }
+                   if (statement != null) {
+                	   statement.close();
                    }
         	   }
         	   i++;
@@ -80,9 +89,6 @@ public class USBDeviceMain implements IUSBDriveListener {
                 commandExecutor1.close();
                 if (connection != null) {
                 	connection.close();
-                }
-                if (statement != null) {
-                	statement.close();
                 }
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
@@ -110,8 +116,8 @@ public class USBDeviceMain implements IUSBDriveListener {
 		partition[0] = list[0];
 		partition[1] = list2[5];
 
-		logger.info(partition[0]);
-		logger.info(partition[1]);
+		logger.debug(partition[0]);
+		logger.debug(partition[1]);
 		
 		return partition;
 	} 
