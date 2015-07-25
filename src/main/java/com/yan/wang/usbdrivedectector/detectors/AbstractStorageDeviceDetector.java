@@ -63,7 +63,7 @@ public abstract class AbstractStorageDeviceDetector {
         if (instance == null) {
             throw new UnsupportedOperationException("Your Operative System (" + OSName + ") is not supported!");
         }
-        logger.info(OSName);
+        //logger.info(OSName);
         return instance;
     }
 

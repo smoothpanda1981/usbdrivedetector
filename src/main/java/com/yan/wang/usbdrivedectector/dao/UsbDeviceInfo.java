@@ -10,8 +10,6 @@ public class UsbDeviceInfo {
 	private String status;
 	
 	
-	
-	
 	public String getPartition() {
 		return partition;
 	}

@@ -119,7 +119,7 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
         	   statement = connection.createStatement();
         	   
         	   if (!uuidExistAlready(deviceInfo.getUuid(), statement)) {
-        		   String query = "insert into removable_devices (partition, uuid, label, mount_path, status) values ('" + deviceInfo.getPartition() + "', '" + deviceInfo.getUuid() + "', '" + deviceInfo.getLabel() + "', null, null);";
+        		   String query = "insert into removable_devices (partition, uuid, label, mount_path, status) values ('" + deviceInfo.getPartition() + "', '" + deviceInfo.getUuid() + "', '" + deviceInfo.getLabel() + "', 'null', 'REMOVED'	);";
             	  
             	   statement.execute(query);   
         	   }
