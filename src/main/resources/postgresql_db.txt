@@ -1,0 +1,8 @@
+CREATE TABLE REMOVABLE_DEVICES (
+   ID SERIAL PRIMARY KEY,
+   PARTITION       TEXT     NOT NULL,
+   UUID            TEXT     NOT NULL,
+   LABEL           TEXT,
+   MOUNT_PATH      TEXT,
+   STATUS          TEXT	
+);
